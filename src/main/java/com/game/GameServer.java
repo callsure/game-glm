@@ -26,9 +26,11 @@ public class GameServer {
         log.info("========================================");
 
         try {
-            // 加载配置
-            ServerConfig config = ServerConfig.fromEnv();
-            log.info("配置加载成功: port={}, mongo={}", config.getPort(), config.getMongoConnectionString());
+            // 加载配置 (优先从 YAML 读取，环境变量可覆盖)
+            ServerConfig config = ServerConfig.load();
+            log.info("配置加载成功: port={}, mongo={}, workerThreads={}, heartbeatTimeout={}",
+                    config.getPort(), config.getMongoConnectionString(),
+                    config.getWorkerThreads(), config.getHeartbeatTimeout());
 
             // 初始化 MongoDB
             MongoManager.init(config.getMongoConnectionString(), config.getDatabaseName());
