@@ -1,0 +1,135 @@
+// 游戏逻辑相关消息定义
+syntax = "proto3";
+
+package com.game.protocol;
+
+option java_package = "com.game.protocol.generated";
+option java_outer_classname = "GameProto";
+
+import "common.proto";
+import "auth.proto";
+
+// ============== 角色相关 ==============
+
+// 创建角色请求
+message CreateRoleRequest {
+  string name = 1;           // 角色名
+  int32 profession = 2;      // 职业
+  int32 gender = 3;          // 性别
+}
+
+// 创建角色响应
+message CreateRoleResponse {
+  int64 role_id = 1;         // 创建的角色ID
+  RoleInfo role = 2;         // 角色信息
+}
+
+// 选择角色请求
+message SelectRoleRequest {
+  int64 role_id = 1;         // 角色ID
+}
+
+// 选择角色响应
+message SelectRoleResponse {
+  RoleDetail role_detail = 1; // 角色详细信息
+}
+
+// 角色详细信息
+message RoleDetail {
+  int64 role_id = 1;         // 角色ID
+  string name = 2;           // 角色名
+  int32 level = 3;           // 等级
+  int32 profession = 4;      // 职业
+  int64 exp = 5;             // 经验值
+  int64 gold = 6;            // 金币
+  int64 diamond = 7;         // 钻石
+
+  // 属性
+  int32 hp = 10;             // 生命值
+  int32 max_hp = 11;         // 最大生命值
+  int32 mp = 12;             // 魔法值
+  int32 max_mp = 13;         // 最大魔法值
+  int32 attack = 14;         // 攻击力
+  int32 defense = 15;        // 防御力
+  int32 speed = 16;          // 速度
+
+  // 位置信息
+  Position position = 20;    // 当前位置
+}
+
+// 位置信息
+message Position {
+  int32 map_id = 1;          // 地图ID
+  float x = 2;               // X坐标
+  float y = 3;               // Y坐标
+  float z = 4;               // Z坐标
+  float rotation = 5;        // 旋转角度
+}
+
+// ============== 战斗相关 ==============
+
+// 移动请求
+message MoveRequest {
+  Position from = 1;         // 起始位置
+  Position to = 2;           // 目标位置
+}
+
+// 移动响应
+message MoveResponse {
+  int64 role_id = 1;         // 角色ID
+  Position position = 2;     // 确认位置
+}
+
+// 攻击请求
+message AttackRequest {
+  int64 target_id = 1;       // 目标ID
+  int32 skill_id = 2;        // 技能ID
+}
+
+// 攻击响应
+message AttackResponse {
+  int64 attacker_id = 1;     // 攻击者ID
+  int64 target_id = 2;       // 目标ID
+  int32 damage = 3;          // 伤害值
+  bool is_critical = 4;      // 是否暴击
+  int32 current_hp = 5;      // 目标当前血量
+}
+
+// 技能释放请求
+message SkillRequest {
+  int32 skill_id = 1;        // 技能ID
+  Position target_pos = 2;   // 目标位置
+  repeated int64 target_ids = 3; // 目标ID列表
+}
+
+// 技能释放响应
+message SkillResponse {
+  int64 caster_id = 1;       // 释放者ID
+  int32 skill_id = 2;        // 技能ID
+  repeated int32 damages = 3; // 伤害列表
+}
+
+// ============== 聊天相关 ==============
+
+// 聊天类型
+enum ChatType {
+  WORLD = 0;                 // 世界频道
+  GUILD = 1;                 // 公会频道
+  PRIVATE = 2;               // 私聊
+  SYSTEM = 3;                // 系统消息
+}
+
+// 聊天消息
+message ChatMessage {
+  ChatType type = 1;         // 聊天类型
+  int64 sender_id = 2;       // 发送者ID
+  string sender_name = 3;    // 发送者名称
+  string content = 4;        // 消息内容
+  int64 timestamp = 5;       // 时间戳
+  int64 receiver_id = 6;     // 接收者ID(私聊时使用)
+}
+
+// 聊天响应
+message ChatResponse {
+  bool success = 1;          // 是否成功
+}

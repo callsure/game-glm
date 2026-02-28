@@ -1,0 +1,17 @@
+# 游戏服务器配置文件
+server:
+  port: 8888
+  worker-threads: 8
+  heartbeat-timeout: 60
+
+mongodb:
+  connection-string: mongodb://localhost:27017
+  database: game_db
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.game: DEBUG
+    io.netty: INFO
+    com.mongodb: INFO

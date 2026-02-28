@@ -1,0 +1,31 @@
+// 认证相关消息定义
+syntax = "proto3";
+
+package com.game.protocol;
+
+option java_package = "com.game.protocol.generated";
+option java_outer_classname = "AuthProto";
+
+// 登录请求
+message LoginRequest {
+  string username = 1;       // 用户名
+  string password = 2;       // 密码(加密)
+  string server_id = 3;      // 服务器ID
+}
+
+// 登录响应
+message LoginResponse {
+  int64 user_id = 1;         // 用户ID
+  string token = 2;          // 认证令牌
+  int64 expire_time = 3;     // 过期时间
+  repeated RoleInfo roles = 4; // 角色列表
+}
+
+// 角色信息
+message RoleInfo {
+  int64 role_id = 1;         // 角色ID
+  string name = 2;           // 角色名称
+  int32 level = 3;           // 等级
+  int32 profession = 4;      // 职业
+  int64 last_login_time = 5; // 最后登录时间
+}

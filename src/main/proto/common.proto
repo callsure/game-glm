@@ -1,0 +1,90 @@
+// 通用消息定义
+syntax = "proto3";
+
+package com.game.protocol;
+
+option java_package = "com.game.protocol.generated";
+option java_outer_classname = "CommonProto";
+
+// 消息类型枚举
+enum MessageType {
+  UNKNOWN = 0;           // 未知消息
+  HEARTBEAT = 1;         // 心跳包
+  HANDSHAKE = 2;         // 握手请求
+  HANDSHAKE_RESP = 3;    // 握手响应
+
+  // 认证相关
+  LOGIN = 100;           // 登录请求
+  LOGIN_RESP = 101;      // 登录响应
+  LOGOUT = 102;          // 登出请求
+  LOGOUT_RESP = 103;     // 登出响应
+
+  // 角色相关
+  CREATE_ROLE = 200;     // 创建角色
+  CREATE_ROLE_RESP = 201;// 创建角色响应
+  SELECT_ROLE = 202;     // 选择角色
+  SELECT_ROLE_RESP = 203;// 选择角色响应
+  DELETE_ROLE = 204;     // 删除角色
+  DELETE_ROLE_RESP = 205;// 删除角色响应
+
+  // 游戏操作
+  MOVE = 300;            // 移动请求
+  MOVE_RESP = 301;       // 移动响应
+  ATTACK = 302;          // 攻击请求
+  ATTACK_RESP = 303;     // 攻击响应
+  SKILL = 304;           // 技能请求
+  SKILL_RESP = 305;      // 技能响应
+
+  // 聊天系统
+  CHAT = 400;            // 聊天消息
+  CHAT_RESP = 401;       // 聊天响应
+
+  // 错误码
+  ERROR = 999;           // 错误消息
+}
+
+// 错误码枚举
+enum ErrorCode {
+  SUCCESS = 0;           // 成功
+  UNKNOWN_ERROR = 1000;  // 未知错误
+  AUTH_FAILED = 1001;    // 认证失败
+  TOKEN_EXPIRED = 1002;  // Token过期
+  ROLE_NOT_FOUND = 1003; // 角色不存在
+  ROLE_EXISTS = 1004;    // 角色已存在
+  INVALID_PARAM = 1005;  // 参数错误
+  SERVER_ERROR = 1006;   // 服务器错误
+  RATE_LIMIT = 1007;     // 请求频率限制
+}
+
+// 通用消息头
+message MessageHeader {
+  int64 session_id = 1;      // 会话ID
+  int64 timestamp = 2;       // 时间戳
+  int32 sequence = 3;        // 序列号
+  MessageType type = 4;      // 消息类型
+}
+
+// 心跳消息
+message Heartbeat {
+  int64 client_time = 1;     // 客户端时间
+}
+
+// 握手请求
+message Handshake {
+  int32 version = 1;         // 客户端版本
+  string device_id = 2;      // 设备ID
+  string platform = 3;       // 平台类型
+}
+
+// 握手响应
+message HandshakeResponse {
+  int64 server_time = 1;     // 服务器时间
+  string session_key = 2;    // 会话密钥
+  int32 heartbeat_interval = 3; // 心跳间隔(秒)
+}
+
+// 错误消息
+message Error {
+  ErrorCode code = 1;        // 错误码
+  string message = 2;        // 错误信息
+}
