@@ -14,6 +14,7 @@ import java.util.UUID;
  * @author Harleysama
  */
 @Slf4j
+@GameHandler(messageType = CommonProto.MessageType.HANDSHAKE_VALUE)
 public class HandshakeHandler extends AbstractMessageHandler<CommonProto.Handshake> {
 
     @Override
@@ -39,10 +40,5 @@ public class HandshakeHandler extends AbstractMessageHandler<CommonProto.Handsha
         sendResponse(ctx, CommonProto.MessageType.HANDSHAKE_RESP_VALUE, response);
 
         log.info("握手成功: sessionKey={}", sessionKey);
-    }
-
-    @Override
-    public int getMessageType() {
-        return CommonProto.MessageType.HANDSHAKE_VALUE;
     }
 }

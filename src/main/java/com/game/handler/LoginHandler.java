@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author Harleysama
  */
 @Slf4j
+@GameHandler(messageType = CommonProto.MessageType.LOGIN_VALUE)
 public class LoginHandler extends AbstractMessageHandler<AuthProto.LoginRequest> {
 
     private final UserDao userDao = new UserDao();
@@ -73,10 +74,5 @@ public class LoginHandler extends AbstractMessageHandler<AuthProto.LoginRequest>
     private String generateToken(Long userId) {
         // 简单实现，实际项目应该使用JWT
         return "token_" + userId + "_" + System.currentTimeMillis();
-    }
-
-    @Override
-    public int getMessageType() {
-        return CommonProto.MessageType.LOGIN_VALUE;
     }
 }

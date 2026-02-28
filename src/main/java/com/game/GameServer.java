@@ -2,9 +2,6 @@ package com.game;
 
 import com.game.config.ServerConfig;
 import com.game.db.MongoManager;
-import com.game.handler.HandshakeHandler;
-import com.game.handler.HeartbeatHandler;
-import com.game.handler.LoginHandler;
 import com.game.handler.MessageHandlerManager;
 import com.game.net.NettyServer;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +13,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GameServer {
+
+    /**
+     * 处理器扫描包路径
+     */
+    private static final String HANDLER_PACKAGE = "com.game.handler";
 
     public static void main(String[] args) {
         log.info("========================================");
@@ -31,7 +33,7 @@ public class GameServer {
             // 初始化 MongoDB
             MongoManager.init(config.getMongoConnectionString(), config.getDatabaseName());
 
-            // 注册消息处理器
+            // 注册消息处理器（扫描方式）
             registerHandlers();
 
             // 启动 Netty 服务器
@@ -46,19 +48,14 @@ public class GameServer {
 
     /**
      * 注册所有消息处理器
+     * 使用注解扫描方式自动注册
      */
     private static void registerHandlers() {
         MessageHandlerManager manager = MessageHandlerManager.getInstance();
 
-        manager.registerHandler(new HandshakeHandler());
-        manager.registerHandler(new HeartbeatHandler());
-        manager.registerHandler(new LoginHandler());
+        // 自动扫描并注册所有带 @GameHandler 注解的处理器
+        manager.scanAndRegister(HANDLER_PACKAGE);
 
-        // TODO: 注册更多处理器
-        // manager.registerHandler(new CreateRoleHandler());
-        // manager.registerHandler(new MoveHandler());
-        // ...
-
-        log.info("消息处理器注册完成! 共{}个", manager);
+        log.info("消息处理器注册完成! 共 {} 个", manager.getHandlerCount());
     }
 }

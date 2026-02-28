@@ -12685,49 +12685,48 @@ public final class GameProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\ngame.proto\022\021com.game.protocol\032\014common." +
-      "proto\032\nauth.proto\"E\n\021CreateRoleRequest\022\014" +
-      "\n\004name\030\001 \001(\t\022\022\n\nprofession\030\002 \001(\005\022\016\n\006gend" +
-      "er\030\003 \001(\005\"P\n\022CreateRoleResponse\022\017\n\007role_i" +
-      "d\030\001 \001(\003\022)\n\004role\030\002 \001(\0132\033.com.game.protoco" +
-      "l.RoleInfo\"$\n\021SelectRoleRequest\022\017\n\007role_" +
-      "id\030\001 \001(\003\"H\n\022SelectRoleResponse\0222\n\013role_d" +
-      "etail\030\001 \001(\0132\035.com.game.protocol.RoleDeta" +
-      "il\"\221\002\n\nRoleDetail\022\017\n\007role_id\030\001 \001(\003\022\014\n\004na" +
-      "me\030\002 \001(\t\022\r\n\005level\030\003 \001(\005\022\022\n\nprofession\030\004 " +
-      "\001(\005\022\013\n\003exp\030\005 \001(\003\022\014\n\004gold\030\006 \001(\003\022\017\n\007diamon" +
-      "d\030\007 \001(\003\022\n\n\002hp\030\n \001(\005\022\016\n\006max_hp\030\013 \001(\005\022\n\n\002m" +
-      "p\030\014 \001(\005\022\016\n\006max_mp\030\r \001(\005\022\016\n\006attack\030\016 \001(\005\022" +
-      "\017\n\007defense\030\017 \001(\005\022\r\n\005speed\030\020 \001(\005\022-\n\010posit" +
-      "ion\030\024 \001(\0132\033.com.game.protocol.Position\"M" +
-      "\n\010Position\022\016\n\006map_id\030\001 \001(\005\022\t\n\001x\030\002 \001(\002\022\t\n" +
-      "\001y\030\003 \001(\002\022\t\n\001z\030\004 \001(\002\022\020\n\010rotation\030\005 \001(\002\"a\n" +
-      "\013MoveRequest\022)\n\004from\030\001 \001(\0132\033.com.game.pr" +
-      "otocol.Position\022\'\n\002to\030\002 \001(\0132\033.com.game.p" +
-      "rotocol.Position\"N\n\014MoveResponse\022\017\n\007role" +
-      "_id\030\001 \001(\003\022-\n\010position\030\002 \001(\0132\033.com.game.p" +
-      "rotocol.Position\"4\n\rAttackRequest\022\021\n\ttar" +
-      "get_id\030\001 \001(\003\022\020\n\010skill_id\030\002 \001(\005\"q\n\016Attack" +
-      "Response\022\023\n\013attacker_id\030\001 \001(\003\022\021\n\ttarget_" +
-      "id\030\002 \001(\003\022\016\n\006damage\030\003 \001(\005\022\023\n\013is_critical\030" +
-      "\004 \001(\010\022\022\n\ncurrent_hp\030\005 \001(\005\"e\n\014SkillReques" +
-      "t\022\020\n\010skill_id\030\001 \001(\005\022/\n\ntarget_pos\030\002 \001(\0132" +
-      "\033.com.game.protocol.Position\022\022\n\ntarget_i" +
-      "ds\030\003 \003(\003\"E\n\rSkillResponse\022\021\n\tcaster_id\030\001" +
-      " \001(\003\022\020\n\010skill_id\030\002 \001(\005\022\017\n\007damages\030\003 \003(\005\"" +
-      "\231\001\n\013ChatMessage\022)\n\004type\030\001 \001(\0162\033.com.game" +
-      ".protocol.ChatType\022\021\n\tsender_id\030\002 \001(\003\022\023\n" +
-      "\013sender_name\030\003 \001(\t\022\017\n\007content\030\004 \001(\t\022\021\n\tt" +
-      "imestamp\030\005 \001(\003\022\023\n\013receiver_id\030\006 \001(\003\"\037\n\014C" +
-      "hatResponse\022\017\n\007success\030\001 \001(\010*9\n\010ChatType" +
-      "\022\t\n\005WORLD\020\000\022\t\n\005GUILD\020\001\022\013\n\007PRIVATE\020\002\022\n\n\006S" +
-      "YSTEM\020\003B(\n\033com.game.protocol.generatedB\t" +
-      "GameProtob\006proto3"
+      "\n\ngame.proto\022\021com.game.protocol\032\nauth.pr" +
+      "oto\"E\n\021CreateRoleRequest\022\014\n\004name\030\001 \001(\t\022\022" +
+      "\n\nprofession\030\002 \001(\005\022\016\n\006gender\030\003 \001(\005\"P\n\022Cr" +
+      "eateRoleResponse\022\017\n\007role_id\030\001 \001(\003\022)\n\004rol" +
+      "e\030\002 \001(\0132\033.com.game.protocol.RoleInfo\"$\n\021" +
+      "SelectRoleRequest\022\017\n\007role_id\030\001 \001(\003\"H\n\022Se" +
+      "lectRoleResponse\0222\n\013role_detail\030\001 \001(\0132\035." +
+      "com.game.protocol.RoleDetail\"\221\002\n\nRoleDet" +
+      "ail\022\017\n\007role_id\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\r\n\005le" +
+      "vel\030\003 \001(\005\022\022\n\nprofession\030\004 \001(\005\022\013\n\003exp\030\005 \001" +
+      "(\003\022\014\n\004gold\030\006 \001(\003\022\017\n\007diamond\030\007 \001(\003\022\n\n\002hp\030" +
+      "\n \001(\005\022\016\n\006max_hp\030\013 \001(\005\022\n\n\002mp\030\014 \001(\005\022\016\n\006max" +
+      "_mp\030\r \001(\005\022\016\n\006attack\030\016 \001(\005\022\017\n\007defense\030\017 \001" +
+      "(\005\022\r\n\005speed\030\020 \001(\005\022-\n\010position\030\024 \001(\0132\033.co" +
+      "m.game.protocol.Position\"M\n\010Position\022\016\n\006" +
+      "map_id\030\001 \001(\005\022\t\n\001x\030\002 \001(\002\022\t\n\001y\030\003 \001(\002\022\t\n\001z\030" +
+      "\004 \001(\002\022\020\n\010rotation\030\005 \001(\002\"a\n\013MoveRequest\022)" +
+      "\n\004from\030\001 \001(\0132\033.com.game.protocol.Positio" +
+      "n\022\'\n\002to\030\002 \001(\0132\033.com.game.protocol.Positi" +
+      "on\"N\n\014MoveResponse\022\017\n\007role_id\030\001 \001(\003\022-\n\010p" +
+      "osition\030\002 \001(\0132\033.com.game.protocol.Positi" +
+      "on\"4\n\rAttackRequest\022\021\n\ttarget_id\030\001 \001(\003\022\020" +
+      "\n\010skill_id\030\002 \001(\005\"q\n\016AttackResponse\022\023\n\013at" +
+      "tacker_id\030\001 \001(\003\022\021\n\ttarget_id\030\002 \001(\003\022\016\n\006da" +
+      "mage\030\003 \001(\005\022\023\n\013is_critical\030\004 \001(\010\022\022\n\ncurre" +
+      "nt_hp\030\005 \001(\005\"e\n\014SkillRequest\022\020\n\010skill_id\030" +
+      "\001 \001(\005\022/\n\ntarget_pos\030\002 \001(\0132\033.com.game.pro" +
+      "tocol.Position\022\022\n\ntarget_ids\030\003 \003(\003\"E\n\rSk" +
+      "illResponse\022\021\n\tcaster_id\030\001 \001(\003\022\020\n\010skill_" +
+      "id\030\002 \001(\005\022\017\n\007damages\030\003 \003(\005\"\231\001\n\013ChatMessag" +
+      "e\022)\n\004type\030\001 \001(\0162\033.com.game.protocol.Chat" +
+      "Type\022\021\n\tsender_id\030\002 \001(\003\022\023\n\013sender_name\030\003" +
+      " \001(\t\022\017\n\007content\030\004 \001(\t\022\021\n\ttimestamp\030\005 \001(\003" +
+      "\022\023\n\013receiver_id\030\006 \001(\003\"\037\n\014ChatResponse\022\017\n" +
+      "\007success\030\001 \001(\010*9\n\010ChatType\022\t\n\005WORLD\020\000\022\t\n" +
+      "\005GUILD\020\001\022\013\n\007PRIVATE\020\002\022\n\n\006SYSTEM\020\003B(\n\033com" +
+      ".game.protocol.generatedB\tGameProtob\006pro" +
+      "to3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          com.game.protocol.generated.CommonProto.getDescriptor(),
           com.game.protocol.generated.AuthProto.getDescriptor(),
         });
     internal_static_com_game_protocol_CreateRoleRequest_descriptor =
@@ -12814,7 +12813,6 @@ public final class GameProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_com_game_protocol_ChatResponse_descriptor,
         new java.lang.String[] { "Success", });
-    com.game.protocol.generated.CommonProto.getDescriptor();
     com.game.protocol.generated.AuthProto.getDescriptor();
   }
 

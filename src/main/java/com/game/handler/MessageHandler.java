@@ -14,16 +14,9 @@ public interface MessageHandler {
     /**
      * 处理消息
      *
-     * @param ctx     Channel上下文
-     * @param packet  协议数据包
+     * @param ctx    Channel上下文
+     * @param packet 协议数据包
      * @throws Exception 处理异常
      */
     void handle(ChannelHandlerContext ctx, ProtocolPacket packet) throws Exception;
-
-    /**
-     * 获取支持的消息类型
-     *
-     * @return 消息类型ID
-     */
-    int getMessageType();
 }

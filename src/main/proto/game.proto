@@ -6,7 +6,6 @@ package com.game.protocol;
 option java_package = "com.game.protocol.generated";
 option java_outer_classname = "GameProto";
 
-import "common.proto";
 import "auth.proto";
 
 // ============== 角色相关 ==============
