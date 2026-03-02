@@ -5,7 +5,12 @@ server:
   heartbeat-timeout: 60
 
 mongodb:
+  # 单节点配置
   connection-string: mongodb://localhost:27017
+  # 复制集配置（多个节点用分号分隔）
+  # connection-string: mongodb://172.16.0.32:27017;172.16.0.27:27017;172.16.0.30:27017
+  # 带认证的复制集
+  # connection-string: mongodb://user:password@172.16.0.32:27017;172.16.0.27:27017;172.16.0.30:27017
   database: game_db
 
 # 日志配置

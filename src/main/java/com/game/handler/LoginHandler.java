@@ -1,6 +1,6 @@
 package com.game.handler;
 
-import com.game.db.UserDao;
+import com.game.db.dao.UserDao;
 import com.game.model.User;
 import com.game.net.Session;
 import com.game.net.SessionManager;

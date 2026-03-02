@@ -1,23 +1,39 @@
 package com.game.model;
 
+import com.game.db.model.anno.Cache;
+import com.game.db.model.anno.EntityCache;
+import com.game.db.model.anno.Id;
+import com.game.db.model.anno.Index;
+import com.game.db.model.anno.Persister;
+import com.game.db.model.entity.IEntity;
 import lombok.Data;
 
 /**
  * 角色实体
+ * <p>
+ * 设计原则：
+ * - 单一职责原则（SRP）：专注于角色数据
+ * - 实现 IEntity 接口以支持 ORM 操作
  *
  * @author Harleysama
  */
 @Data
-public class Role {
+@EntityCache(
+        cache = @Cache(value = "default"),
+        persister = @Persister(value = "default")
+)
+public class Role implements IEntity<Long> {
 
     /**
-     * 角色ID
+     * 角色ID（主键）
      */
+    @Id
     private Long id;
 
     /**
-     * 用户ID
+     * 用户ID（外键）
      */
+    @Index(ascending = true)
     private Long userId;
 
     /**
@@ -116,4 +132,24 @@ public class Role {
      * 旋转角度
      */
     private Float rotation = 0f;
+
+    /**
+     * 版本号（用于并发控制）
+     */
+    private long vs;
+
+    @Override
+    public Long id() {
+        return id;
+    }
+
+    @Override
+    public long gvs() {
+        return vs;
+    }
+
+    @Override
+    public void svs(long vs) {
+        this.vs = vs;
+    }
 }
