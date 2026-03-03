@@ -7,6 +7,7 @@ import com.game.db.model.config.CacheStrategy;
 import com.game.db.model.config.HostConfig;
 import com.game.db.model.config.OrmConfig;
 import com.game.db.model.config.PersisterStrategy;
+import com.game.event.EventManager;
 import com.game.handler.MessageHandlerManager;
 import com.game.net.NettyServer;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +33,11 @@ public class GameServer {
      */
     private static final String ENTITY_PACKAGE = "com.game.model";
 
+    /**
+     * 事件监听器扫描包路径
+     */
+    private static final String LISTENER_PACKAGE = "com.game.listener";
+
     public static void main(String[] args) {
         log.info("========================================");
         log.info("  游戏服务器启动中...");
@@ -50,6 +56,9 @@ public class GameServer {
 
             // 注册消息处理器（扫描方式）
             registerHandlers();
+
+            // 注册事件监听器（扫描方式）
+            registerEventListeners();
 
             // 启动 Netty 服务器
             NettyServer server = new NettyServer(config);
@@ -72,6 +81,19 @@ public class GameServer {
         manager.scanAndRegister(HANDLER_PACKAGE);
 
         log.info("消息处理器注册完成! 共 {} 个", manager.getHandlerCount());
+    }
+
+    /**
+     * 注册所有事件监听器
+     * 使用注解扫描方式自动注册
+     */
+    private static void registerEventListeners() {
+        EventManager manager = EventManager.getInstance();
+
+        // 自动扫描并注册所有带 @Subscribe 注解的监听器方法
+        manager.scanAndRegister(LISTENER_PACKAGE);
+
+        log.info("事件监听器注册完成! 共 {} 个监听器方法", manager.getTotalListenerCount());
     }
 
     /**
@@ -111,9 +133,17 @@ public class GameServer {
 
         // 注册关闭钩子，确保优雅关闭
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("检测到关闭信号，开始优雅关闭 ORM 框架...");
+            log.info("检测到关闭信号，开始优雅关闭...");
+
+            // 关闭事件管理器
+            log.info("关闭事件管理器...");
+            EventManager.getInstance().shutdown();
+
+            // 关闭 ORM 框架
+            log.info("关闭 ORM 框架...");
             OrmContext.getOrmContext().shutdown();
-            log.info("ORM 框架已关闭，再见！(*￣︶￣)");
+
+            log.info("服务器已关闭，再见！(*￣︶￣)");
         }));
 
         log.info("ORM 框架初始化完成!");

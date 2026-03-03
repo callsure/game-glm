@@ -44,6 +44,17 @@ game-glm/
 │   │   │   │   ├── HeartbeatHandler.java # 心跳处理
 │   │   │   │   ├── HandshakeHandler.java # 握手处理
 │   │   │   │   └── LoginHandler.java     # 登录处理
+│   │   │   ├── event/                    # 事件系统
+│   │   │   │   ├── GameEvent.java        # 事件基础接口
+│   │   │   │   ├── Subscribe.java        # 订阅注解
+│   │   │   │   ├── EventManager.java     # 事件管理器
+│   │   │   │   ├── EventListenerWrapper.java # 监听器包装器
+│   │   │   │   └── impl/                 # 事件实现
+│   │   │   │       ├── PlayerLoginEvent.java    # 玩家登录事件
+│   │   │   │       └── PlayerLevelUpEvent.java  # 玩家升级事件
+│   │   │   ├── listener/                 # 事件监听器
+│   │   │   │   ├── PlayerLoginListener.java    # 玩家登录监听器
+│   │   │   │   └── PlayerLevelUpListener.java  # 玩家升级监听器
 │   │   │   ├── db/                       # 数据访问层
 │   │   │   │   ├── OrmContext.java       # ORM上下文（统一入口）
 │   │   │   │   ├── MongoManager.java     # MongoDB管理器
@@ -150,6 +161,7 @@ export MONGO_URL=mongodb://user:password@172.16.0.32:27017;172.16.0.27:27017;172
 - **缓存管理**: 内置 Caffeine 高性能缓存，支持多级缓存策略
 - **持久化策略**: 支持定时（CRON）、定间隔（TIME）等多种持久化方式
 - **优雅关闭**: JVM 关闭钩子自动触发缓存持久化，确保数据安全
+- **Upsert 支持**: `save()` 方法自动判断插入或更新，简化数据操作
 
 **使用示例：**
 ```java
@@ -158,9 +170,13 @@ UserDao userDao = new UserDao();
 User user = userDao.load(userId);
 userDao.update(user);
 
-// 直接访问 ORM 组件
+// 使用 save() 方法（存在则更新，不存在则插入）
 IEntityCaches<Long, User> caches = OrmContext.getEntityCaches(User.class);
+caches.save(user);  // 推荐：数据库 + 缓存同步
+
+// 直接访问 ORM 组件
 IAccessor accessor = OrmContext.getAccessor();
+accessor.save(user);  // 仅操作数据库
 ```
 
 ### 模块化消息处理
@@ -169,6 +185,47 @@ IAccessor accessor = OrmContext.getAccessor();
 - 自动消息路由分发
 - 支持处理器热插拔
 - 注解驱动的处理器注册
+
+### 事件监听驱动系统
+
+- **事件总线**: `EventManager` 单例模式，全局统一的事件分发中心
+- **注解驱动**: `@Subscribe` 注解标记监听器方法，支持自动扫描注册
+- **异步支持**: `async=true` 开启异步执行，独立线程池处理
+- **优先级控制**: `priority` 参数控制监听器执行顺序
+- **解耦设计**: 业务逻辑从 Handler 中分离，提升代码可维护性
+
+**使用示例：**
+```java
+// 1. 定义事件
+public class PlayerLoginEvent implements GameEvent {
+    private Long playerId;
+    private String playerName;
+    // ... getters/setters
+}
+
+// 2. 创建监听器
+public class PlayerLoginListener {
+    @Subscribe  // 同步执行
+    public void onPlayerLogin(PlayerLoginEvent event) {
+        // 处理登录逻辑
+    }
+
+    @Subscribe(async = true)  // 异步执行
+    public void onPlayerLoginAsync(PlayerLoginEvent event) {
+        // 异步处理（如记录日志）
+    }
+
+    @Subscribe(priority = 10)  // 高优先级
+    public void onHighPriority(PlayerLoginEvent event) {
+        // 优先执行
+    }
+}
+
+// 3. 发布事件
+PlayerLoginEvent event = new PlayerLoginEvent(1001L, "PlayerA");
+EventManager.getInstance().publish(event);  // 同步发布
+EventManager.getInstance().publishAsync(event);  // 异步发布
+```
 
 ### 数据持久化
 
@@ -215,7 +272,13 @@ IAccessor accessor = OrmContext.getAccessor();
                          │
                          ↓
         ┌──────────────────────────────┐
-        │  4. 启动 Netty 服务器         │
+        │  4. 注册事件监听器            │
+        │     (扫描 @Subscribe)         │
+        └──────────────────────────────┘
+                         │
+                         ↓
+        ┌──────────────────────────────┐
+        │  5. 启动 Netty 服务器         │
         └──────────────────────────────┘
                          │
                          ↓
@@ -225,6 +288,7 @@ IAccessor accessor = OrmContext.getAccessor();
                          ↓
         ┌──────────────────────────────┐
         │  关闭钩子触发                 │
+        │  - 关闭事件管理器             │
         │  - 持久化所有缓存数据         │
         │  - 关闭数据库连接             │
         │  - 释放资源                   │
@@ -248,6 +312,44 @@ IAccessor accessor = OrmContext.getAccessor();
 | CHAT | 400 | 聊天消息 |
 
 ## 开发指南
+
+### 添加新的事件监听器
+
+1. 在 `com.game.event.impl` 包下定义事件类
+2. 在 `com.game.listener` 包下创建监听器类
+3. 添加 `@Subscribe` 注解标记监听器方法
+
+**示例：**
+```java
+// 1. 定义事件
+package com.game.event.impl;
+
+public class PlayerLogoutEvent implements GameEvent {
+    private Long playerId;
+    private String playerName;
+    private long logoutTime;
+
+    // getters/setters...
+}
+
+// 2. 创建监听器
+package com.game.listener;
+
+@Slf4j
+public class PlayerLogoutListener {
+
+    @Subscribe  // 同步执行
+    public void onPlayerLogout(PlayerLogoutEvent event) {
+        log.info("玩家退出: {}", event.getPlayerName());
+        // 清理在线状态、保存数据等
+    }
+
+    @Subscribe(async = true)  // 异步执行
+    public void onPlayerLogoutAsync(PlayerLogoutEvent event) {
+        // 异步记录日志、发送通知等
+    }
+}
+```
 
 ### 添加新的消息处理器
 
