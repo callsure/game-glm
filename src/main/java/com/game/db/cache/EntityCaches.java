@@ -125,21 +125,6 @@ public class EntityCaches<PK extends Comparable<PK>, E extends IEntity<PK>> impl
     }
 
     @Override
-    public void addLoad(E entity) {
-        AssertUtil.notNull(entity, "实体不能为空");
-        PNode<E> currentPnode = cache.getIfPresent(entity.id());
-        if (currentPnode == null) {
-            currentPnode = new PNode<>(entity);
-            cache.put(entity.id(), currentPnode);
-        } else {
-            E pnodeEntity = currentPnode.getEntity();
-            if (entity.gvs() >= pnodeEntity.gvs()) {
-                currentPnode.setEntity(entity);
-            }
-        }
-    }
-
-    @Override
     public void update(E entity) {
         AssertUtil.notNull(entity, "实体不能为空");
 
@@ -250,6 +235,49 @@ public class EntityCaches<PK extends Comparable<PK>, E extends IEntity<PK>> impl
                 stats.loadCount(),
                 stats.evictionCount()
         );
+    }
+
+    @Override
+    public boolean save(E entity) {
+        AssertUtil.notNull(entity, "实体不能为空");
+
+        try {
+            // 先执行数据库 upsert 操作
+            boolean dbSuccess = OrmContext.getAccessor().save(entity);
+
+            if (!dbSuccess) {
+                log.warn("保存实体到数据库失败: entity={}, id={}",
+                        entityDef.getClazz().getSimpleName(), entity.id());
+                return false;
+            }
+
+            // 数据库操作成功后，更新缓存
+            PNode<E> currentPnode = cache.getIfPresent(entity.id());
+
+            if (currentPnode == null) {
+                // 缓存中不存在，创建新的缓存节点
+                currentPnode = new PNode<>(entity);
+                cache.put(entity.id(), currentPnode);
+            } else {
+                // 缓存中已存在，更新实体数据
+                currentPnode.setEntity(entity);
+                // 更新修改时间
+                currentPnode.setModifiedTime(DateUtil.getSecondLevelMillis());
+            }
+
+            log.debug("保存实体成功（数据库+缓存）: entity={}, id={}",
+                    entityDef.getClazz().getSimpleName(), entity.id());
+            return true;
+
+        } catch (Exception e) {
+            log.error("保存实体异常: entity={}, id={}",
+                    entityDef.getClazz().getSimpleName(), entity.id(), e);
+        } catch (Throwable t) {
+            log.error("保存实体错误: entity={}, id={}",
+                    entityDef.getClazz().getSimpleName(), entity.id(), t);
+        }
+
+        return false;
     }
 
     // ==================== 私有方法 ====================

@@ -93,7 +93,7 @@ public abstract class BaseDao<PK extends Comparable<PK>, E extends IEntity<PK>> 
     /**
      * 保存实体到缓存
      * <p>
-     * 实体会被添加到缓存中，等待持久化器异步写入数据库
+     * 实体先存数据库,再添加到缓存中，等待持久化器异步写入数据库
      *
      * @param entity 实体对象
      */
@@ -102,7 +102,7 @@ public abstract class BaseDao<PK extends Comparable<PK>, E extends IEntity<PK>> 
             log.warn("保存实体失败：实体对象不能为 null, 实体类: {}", entityClass.getSimpleName());
             return;
         }
-        getEntityCaches().addLoad(entity);
+        getEntityCaches().save(entity);
     }
 
     /**

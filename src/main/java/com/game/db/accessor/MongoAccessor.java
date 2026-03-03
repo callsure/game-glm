@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mongodb.client.model.ReplaceOptions;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
 
@@ -177,6 +178,34 @@ public class MongoAccessor implements IAccessor {
             return null;
         }
         return result.get(0);
+    }
+
+    @Override
+    public <E extends IEntity<?>> boolean save(E entity) {
+        try {
+            Class<E> entityClazz = (Class<E>) entity.getClass();
+            MongoCollection<E> collection = getCollection(entityClazz);
+
+            Bson filter = eq("_id", entity.id());
+
+            // 使用 upsert 选项：存在则更新，不存在则插入
+            ReplaceOptions options = new ReplaceOptions().upsert(true);
+
+            com.mongodb.client.result.UpdateResult result = collection.replaceOne(filter, entity, options);
+
+            boolean success = result.getModifiedCount() > 0 || result.getUpsertedId() != null;
+            if (success) {
+                if (result.getUpsertedId() != null) {
+                    log.debug("保存实体（插入）成功: collection={}, id={}", getCollectionName(entityClazz), entity.id());
+                } else {
+                    log.debug("保存实体（更新）成功: collection={}, id={}", getCollectionName(entityClazz), entity.id());
+                }
+            }
+            return success;
+        } catch (Throwable t) {
+            log.error("保存实体异常", t);
+        }
+        return false;
     }
 
     /**

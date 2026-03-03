@@ -98,4 +98,14 @@ public interface IAccessor {
      */
     @Nullable
     <E extends IEntity<?>> E load(Object pk, Class<E> entityClazz);
+
+    /**
+     * 保存实体（存在则更新，不存在则插入）
+     * 使用 MongoDB 的 upsert 特性实现
+     *
+     * @param entity 实体对象
+     * @param <E>    实体类型
+     * @return 是否保存成功
+     */
+    <E extends IEntity<?>> boolean save(E entity);
 }

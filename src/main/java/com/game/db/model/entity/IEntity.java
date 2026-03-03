@@ -1,5 +1,7 @@
 package com.game.db.model.entity;
 
+import com.game.db.OrmContext;
+
 /**
  * ORM 实体接口
  * 所有需要持久化的实体都必须实现此接口
@@ -63,7 +65,7 @@ public interface IEntity<PK extends Comparable<PK>> {
      * 便捷方法，直接调用数据访问层插入数据
      */
     default void saveAndInsert() {
-        throw new UnsupportedOperationException("请先初始化 OrmContext");
+        OrmContext.getAccessor().save(this);
     }
 
     /**
@@ -71,6 +73,6 @@ public interface IEntity<PK extends Comparable<PK>> {
      * 便捷方法，直接调用数据访问层删除数据
      */
     default void deleteEntity() {
-        throw new UnsupportedOperationException("请先初始化 OrmContext");
+        OrmContext.getAccessor().delete(this);
     }
 }

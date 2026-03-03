@@ -29,13 +29,6 @@ public interface IEntityCaches<PK extends Comparable<PK>, E extends IEntity<PK>>
     E load(PK pk);
 
     /**
-     * 加入缓存
-     *
-     * @param entity 实体对象
-     */
-    void addLoad(E entity);
-
-    /**
      * 更新缓存中的数据
      * 只更新缓存的时间戳，并通过一定策略写入到数据库
      *
@@ -83,4 +76,13 @@ public interface IEntityCaches<PK extends Comparable<PK>, E extends IEntity<PK>>
      * @return 状态字符串
      */
     String recordStatus();
+
+    /**
+     * 保存实体（存在则更新，不存在则插入）
+     * 先执行数据库 upsert 操作，成功后更新缓存
+     *
+     * @param entity 实体对象
+     * @return 是否保存成功
+     */
+    boolean save(E entity);
 }
