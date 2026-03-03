@@ -1,10 +1,6 @@
 package com.game.model;
 
-import com.game.db.model.anno.Cache;
-import com.game.db.model.anno.EntityCache;
-import com.game.db.model.anno.Id;
-import com.game.db.model.anno.Index;
-import com.game.db.model.anno.Persister;
+import com.game.db.model.anno.*;
 import com.game.db.model.entity.IEntity;
 import lombok.Data;
 
@@ -35,11 +31,6 @@ public class User implements IEntity<Long> {
      */
     @Index(ascending = true, unique = true)
     private String username;
-
-    /**
-     * 密码（加密存储）
-     */
-    private String password;
 
     /**
      * 创建时间
