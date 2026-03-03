@@ -1,10 +1,6 @@
 package com.game.model;
 
-import com.game.db.model.anno.Cache;
-import com.game.db.model.anno.EntityCache;
-import com.game.db.model.anno.Id;
-import com.game.db.model.anno.Index;
-import com.game.db.model.anno.Persister;
+import com.game.db.model.anno.*;
 import com.game.db.model.entity.IEntity;
 import lombok.Data;
 

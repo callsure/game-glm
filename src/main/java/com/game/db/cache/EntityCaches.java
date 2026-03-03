@@ -175,7 +175,6 @@ public class EntityCaches<PK extends Comparable<PK>, E extends IEntity<PK>> impl
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void persistAll() {
         try {
             Collection<@NonNull PNode<E>> allPnodes = cache.asMap().values();

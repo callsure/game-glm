@@ -47,8 +47,8 @@ game-glm/
 │   │   │   ├── db/                       # 数据访问层
 │   │   │   │   ├── OrmContext.java       # ORM上下文（统一入口）
 │   │   │   │   ├── MongoManager.java     # MongoDB管理器
-│   │   │   │   ├── BaseDao.java          # DAO基类
 │   │   │   │   ├── dao/                  # DAO实现类
+│   │   │   │   │   ├── BaseDao.java      # DAO基类
 │   │   │   │   │   ├── UserDao.java      # 用户DAO
 │   │   │   │   │   └── RoleDao.java      # 角色DAO
 │   │   │   │   ├── accessor/             # 数据访问器
