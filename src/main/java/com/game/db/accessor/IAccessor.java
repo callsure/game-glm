@@ -108,27 +108,4 @@ public interface IAccessor {
      * @return 是否保存成功
      */
     <E extends IEntity<?>> boolean save(E entity);
-
-    /**
-     * 根据索引字段名和值查询单个实体
-     *
-     * @param indexField 索引字段名
-     * @param value      索引值
-     * @param entityClazz 实体类型
-     * @param <E>        实体类型
-     * @return 实体对象，不存在返回 null
-     */
-    @Nullable
-    <E extends IEntity<?>> E findByIndex(String indexField, Object value, Class<E> entityClazz);
-
-    /**
-     * 根据索引字段名和值查询实体列表
-     *
-     * @param indexField 索引字段名
-     * @param value      索引值
-     * @param entityClazz 实体类型
-     * @param <E>        实体类型
-     * @return 实体列表，不存在返回空列表
-     */
-    <E extends IEntity<?>> List<E> findListByIndex(String indexField, Object value, Class<E> entityClazz);
 }

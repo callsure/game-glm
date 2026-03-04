@@ -1,10 +1,7 @@
 package com.game;
 
-import com.game.actor.GameActorSystem;
-import com.game.actor.GameGuardian;
 import com.game.config.ServerConfig;
 import com.game.db.OrmContext;
-import com.game.db.MongoManager;
 import com.game.db.model.config.CacheStrategy;
 import com.game.db.model.config.HostConfig;
 import com.game.db.model.config.OrmConfig;
@@ -62,9 +59,6 @@ public class GameServer {
             // 注册事件监听器（扫描方式）
             registerEventListeners();
 
-            // 初始化 Akka Actor 系统
-            initActorSystem();
-
             // 启动 Netty 服务器
             NettyServer server = new NettyServer(config);
             server.start();
@@ -99,24 +93,6 @@ public class GameServer {
         manager.scanAndRegister(LISTENER_PACKAGE);
 
         log.info("事件监听器注册完成! 共 {} 个监听器方法", manager.getTotalListenerCount());
-    }
-
-    /**
-     * 初始化 Akka Actor 系统
-     * 创建 ActorSystem 和顶层 Guardian Actor
-     */
-    private static void initActorSystem() {
-        log.info("初始化 Akka Actor 系统...");
-
-        // 初始化 Actor 系统
-        GameActorSystem.init();
-
-        // 发送初始化命令给 Guardian
-        GameActorSystem.getSystem().tell(
-                GameGuardian.InitSystem.getInstance()
-        );
-
-        log.info("Akka Actor 系统初始化完成!");
     }
 
     /**
@@ -157,10 +133,6 @@ public class GameServer {
         // 注册关闭钩子，确保优雅关闭
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("检测到关闭信号，开始优雅关闭...");
-
-            // 关闭 Actor 系统（优先关闭，确保逻辑处理完成）
-            log.info("关闭 Actor 系统...");
-            GameActorSystem.shutdown();
 
             // 关闭事件管理器
             log.info("关闭事件管理器...");

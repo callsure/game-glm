@@ -208,25 +208,6 @@ public class MongoAccessor implements IAccessor {
         return false;
     }
 
-    @Override
-    public <E extends IEntity<?>> E findByIndex(String indexField, Object value, Class<E> entityClazz) {
-        MongoCollection<E> collection = getCollection(entityClazz);
-        List<E> result = new ArrayList<>(1);
-        collection.find(eq(indexField, value)).forEach(result::add);
-        if (CollUtil.isEmpty(result)) {
-            return null;
-        }
-        return result.get(0);
-    }
-
-    @Override
-    public <E extends IEntity<?>> List<E> findListByIndex(String indexField, Object value, Class<E> entityClazz) {
-        MongoCollection<E> collection = getCollection(entityClazz);
-        List<E> result = new ArrayList<>();
-        collection.find(eq(indexField, value)).forEach(result::add);
-        return result;
-    }
-
     /**
      * 获取集合名称（用于日志）
      *
